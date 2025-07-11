@@ -1,0 +1,34 @@
+{
+  "name": "pizzeria-mamma-mia",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "start": "react-scripts start"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.3.3",
+    "bootstrap": "^5.3.7",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.6.3",
+    "react-scripts": "^5.0.1"
+  },
+  "devDependencies": {
+    "vite": "^4.5.5"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
