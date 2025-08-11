@@ -7,25 +7,24 @@ const Navbar = () => {
   const { token, logout } = useUser();
 
   return (
-    <nav className="navbar navbar-light bg-light px-4 justify-content-between">
+    <nav className="navbar navbar-expand-lg navbar-light bg-light px-4 justify-content-between">
       <div>
-        <Link to="/" className="btn btn-outline-primary mx-1">Home</Link>
+        <Link to="/" className="btn btn-outline-primary mx-1">🍕 Home</Link>
         {token ? (
           <>
-            <Link to="/profile" className="btn btn-outline-success mx-1">Profile</Link>
-            <button onClick={logout} className="btn btn-outline-danger mx-1">Logout</button>
+            <Link to="/profile" className="btn btn-outline-success mx-1">🔓 Profile</Link>
+            <button className="btn btn-outline-danger mx-1" onClick={logout}>🔒 Logout</button>
           </>
         ) : (
           <>
-            <Link to="/login" className="btn btn-outline-primary mx-1">Login</Link>
-            <Link to="/register" className="btn btn-outline-secondary mx-1">Register</Link>
+            <Link to="/login" className="btn btn-outline-primary mx-1">🔐 Login</Link>
+            <Link to="/register" className="btn btn-outline-secondary mx-1">🔐 Register</Link>
           </>
         )}
       </div>
+
       <div>
-        <Link to="/cart" className="btn btn-outline-dark">
-          🛒 Total: ${total.toLocaleString("es-CL")}
-        </Link>
+        <Link to="/cart" className="btn btn-outline-dark">🛒 Total: ${total.toLocaleString("es-CL")}</Link>
       </div>
     </nav>
   );

@@ -1,68 +1,52 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
 
 const Login = () => {
+  const { login } = useUser();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [isSuccess, setIsSuccess] = useState(null); // true/false/null
+  const [msg, setMsg] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Validaciones
+    setMsg(null);
     if (!email || !password) {
-      setMessage("Todos los campos son obligatorios.");
-      setIsSuccess(false);
+      setMsg({ type: "error", text: "Todos los campos son obligatorios." });
       return;
     }
-
     if (password.length < 6) {
-      setMessage("La contraseña debe tener al menos 6 caracteres.");
-      setIsSuccess(false);
+      setMsg({ type: "error", text: "La contraseña debe tener al menos 6 caracteres." });
       return;
     }
-
-    // Si todo está correcto
-    setMessage("¡Inicio de sesión exitoso!");
-    setIsSuccess(true);
-
-    // Limpiar campos (opcional)
-    setEmail("");
-    setPassword("");
+    const res = await login(email, password);
+    if (res.ok) {
+      setMsg({ type: "success", text: "Login exitoso." });
+      navigate("/profile");
+    } else {
+      setMsg({ type: "error", text: res.message || "Error en login" });
+    }
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5" style={{ maxWidth: 520 }}>
       <h2>Iniciar sesión</h2>
-      <form onSubmit={handleSubmit} className="mt-4">
+      <form onSubmit={handleSubmit} className="mt-3">
         <div className="mb-3">
-          <label className="form-label">Email:</label>
-          <input
-            type="email"
-            className="form-control"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+          <label className="form-label">Email</label>
+          <input value={email} onChange={(e) => setEmail(e.target.value)} className="form-control" type="email" />
         </div>
-
         <div className="mb-3">
-          <label className="form-label">Contraseña:</label>
-          <input
-            type="password"
-            className="form-control"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <label className="form-label">Contraseña</label>
+          <input value={password} onChange={(e) => setPassword(e.target.value)} className="form-control" type="password" />
         </div>
-
-        <button type="submit" className="btn btn-success">Ingresar</button>
+        <button className="btn btn-success">Ingresar</button>
       </form>
 
-      {message && (
-        <div className={`alert mt-4 ${isSuccess ? "alert-success" : "alert-danger"}`}>
-          {message}
+      {msg && (
+        <div className={`alert mt-3 ${msg.type === "success" ? "alert-success" : "alert-danger"}`}>
+          {msg.text}
         </div>
       )}
     </div>

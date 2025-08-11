@@ -1,9 +1,45 @@
+import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useUser } from "../context/UserContext";
+
+const API = "http://localhost:5000";
 
 const Cart = () => {
   const { cart, increaseQty, decreaseQty, total } = useCart();
   const { token } = useUser();
+  const [message, setMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleCheckout = async () => {
+    setMessage(null);
+    if (cart.length === 0) {
+      setMessage({ type: "error", text: "El carrito está vacío." });
+      return;
+    }
+    if (!token) {
+      setMessage({ type: "error", text: "Debes iniciar sesión para pagar." });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch(`${API}/api/checkouts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ items: cart }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Error en checkout");
+      setMessage({ type: "success", text: "Compra realizada con éxito. ¡Gracias!" });
+      setLoading(false);
+    } catch (err) {
+      setMessage({ type: "error", text: err.message || "Error al pagar" });
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="container mt-5">
@@ -29,9 +65,15 @@ const Cart = () => {
         </ul>
       )}
 
+      {message && (
+        <div className={`alert mt-3 ${message.type === "success" ? "alert-success" : "alert-danger"}`}>
+          {message.text}
+        </div>
+      )}
+
       <div className="text-end mt-4">
-        <button className="btn btn-primary" disabled={!token}>
-          Pagar
+        <button className="btn btn-primary" onClick={handleCheckout} disabled={!token || loading}>
+          {loading ? "Procesando..." : "Pagar"}
         </button>
       </div>
     </div>
